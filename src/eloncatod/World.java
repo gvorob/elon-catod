@@ -9,9 +9,12 @@ import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.KeyEvent;
+import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -60,7 +63,7 @@ public class World implements UIListener{
         //editTile = new Tile(0,0);
         try {
             sprites = new BufferedImage[3];
-            sprites[0] = ImageIO.read(new File("tiles.png"));
+            sprites[0] = ImageIO.read(new File("drones.png"));
             sprites[1] = ImageIO.read(new File("entities.png"));
             sprites[2] = ImageIO.read(new File("map.png"));
             //assembleBG = ImageIO.read(new File("assemble.png"));
@@ -77,7 +80,7 @@ public class World implements UIListener{
         map = new DrawComp(new SpriteData(2, 0, 0, 560, 280), 0, -200);
         drawComps.add(map);
         player = new Player(this);
-        
+        controllers.add(new Drone(this, true, player));
         controllers.add(player);
         //DrawComp temp = new DrawComp(new SpriteData(1, 64 * 1 , 0, 64, 128));
         //temp.x = 5;
@@ -121,6 +124,8 @@ public class World implements UIListener{
     
     public void update(float time, Keyboard keys, Mouse m)//per-frame game updates
     {
+        Point view = player.getView();
+        boolean flag = false;//used for click blocking for ui
         if(mode == MODE_PLAY)
         {
             for(ObjectController o : controllers)
@@ -129,8 +134,13 @@ public class World implements UIListener{
             }
             for(UIRegion r : ui)
             {
-                if(r.update(mouse))
-                    break;
+                if(!flag)
+                {
+                    mouse.setShift(view.x, view.y);
+                    if(r.update(mouse))
+                        flag = true;
+                }
+                
             }
             //if(keys.getKey(KeyEvent.VK_F1))
                 //mode = MODE_EDITOR;
@@ -196,6 +206,9 @@ public class World implements UIListener{
     {
         Graphics2D g = b.createGraphics();
         Point view = player.getView();
+        AffineTransform at = new AffineTransform();
+        at.translate(-1 * view.x, -1 * view.y);
+        g.setTransform(at);
         for(DrawComp d : drawComps)
         {
             if(d.isIso())
@@ -204,7 +217,7 @@ public class World implements UIListener{
                 Point p = DrawComp.fromIso(d.x, d.y, d.z);
                 //int xcor = (int)(d.refx + 16 * d.x + 16 * d.y);
                 //int ycor = (int)(d.refy + (8 * d.x) + (-8 * d.y) + (-16 * d.z));
-                d.draw().drawSprite(g, p.x + d.refx - view.x, p.y + d.refy - view.y, sprites);
+                d.draw().drawSprite(g, p.x + d.refx, p.y + d.refy, sprites);
                 /*Point p1,p2,p3,p4;
                 p1 = DrawComp.fromIso(0,0,0);
                 p2 = DrawComp.fromIso(10,0,0);
@@ -228,6 +241,10 @@ public class World implements UIListener{
             {
                 
             }
+        }
+        for(UIRegion r:ui)
+        {
+            r.draw(g);
         }
         //entities = new ArrayList<Entity>();
         if(mode == MODE_PLAY)
@@ -295,9 +312,13 @@ public class World implements UIListener{
     }
     
     public void add(DrawComp d)
-    {drawComps.add(d);}
+    {drawComps.add(d); 
+    }
     public void add(UIRegion r)
-    {ui.add(r);}
+    {ui.add(r);Collections.sort(ui, new Comparator<UIRegion>(){
+        public int compare(UIRegion a, UIRegion b)
+        {return b.uiid- a.uiid;}
+    });}
     
     private void drawEntities(int camDistance, Graphics2D g)//camdistance is the distance from the top-left of the grid, given by x - y
     {

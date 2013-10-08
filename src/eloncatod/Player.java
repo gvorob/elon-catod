@@ -17,13 +17,13 @@ public class Player extends ObjectController implements UIListener{
     UIRegion interactRegion;
     Vector2 target;
     
-    final float speed = 4;
+    final float speed = 6;
     
     public Player(World w)
     {
         SpriteData temp = new SpriteData(1, 0, 0, 64, 128);
         drawer = new DrawComp(temp,-32,-116);
-        interactRegion = new UIRegion(new Rectangle(500, 500), 0, this);
+        interactRegion = new UIRegion(new Rectangle(-50000, -50000, 100000, 100000), 0, this);
         w.add(drawer);
         w.add(interactRegion);
     }
@@ -44,31 +44,23 @@ public class Player extends ObjectController implements UIListener{
                 drawer.y += temp.y;
             }
         }
-        //System.out.println("x,y:");
-        //System.out.println(drawer.x);
-        //System.out.println(drawer.y);
     }
     
     public Point getView()
     {
         Point view =  DrawComp.fromIso(drawer.x, drawer.y, drawer.z);
-        view.x -= 250;
         view.y -= 250;
+        view.x -= 250;
         return view;
     }
 
     @Override
     public void informClicked(int i, Mouse m) {
-        Point temp = getView();
-        target = DrawComp.toIso(m.getX() + temp.x,m.getY() + temp.y);
-        /*
-        System.out.println("Coords");
-        System.out.println(m.getX());
-        System.out.println(temp.x);
-        System.out.println(m.getY());
-        System.out.println(temp.y);
-        System.out.println(target.x);
-        System.out.println(target.y);
-        */
+        switch(i)
+        {
+            case 0:
+                target = DrawComp.toIso(m.getX(),m.getY());
+                break;
+        }
     }
 }

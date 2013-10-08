@@ -46,13 +46,13 @@ public class DrawComp extends Component{
     
     public static Point fromIso(float x, float y, float z)
     {
-        int xcor = (int)(16 * x + 16 * y);
-        int ycor = (int)((8 * x) + (-8 * y) + (-16 * z));
+        int xcor = (int)(8 * x + 8 * y);
+        int ycor = (int)((4 * x) + (-4 * y) + (-8 * z));
         return new Point(xcor, ycor);
     }
     
     public static Vector2 toIso(int x, int y)
     {
-        return new Vector2(x/32.0f + y/16.0f, x/32.0f - y/16.0f);
+        return new Vector2(x/16.0f + y/8.0f, x/16.0f - y/8.0f);
     }
 }

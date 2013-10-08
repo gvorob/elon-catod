@@ -20,19 +20,30 @@ public class Mouse extends MouseInputAdapter{
     private ArrayList<MouseEventListener> listeners;
     private int x;
     private int y;
+    private int sx;//shift, for purposes of scrolling with the world
+    private int sy;
     private boolean l;
     private boolean r;
     
     public Mouse()
     {
-        listeners = new ArrayList<MouseEventListener>();
+        listeners = new ArrayList<>();
     }
+    
+    public void setShift(int tempx, int tempy)
+    {
+        sx = tempx;
+        sy = tempy;
+    }
+    
+    public void resetShift()
+    {sx = sy = 0;}
     
     public void addListener(MouseEventListener e){listeners.add(e);}    
     public void removeListener(MouseEventListener e){listeners.remove(e);}
     
     public void mouseMoved(MouseEvent e){
-        informMoved(x,y,e.getX(),e.getY(),l,r);
+        informMoved(x + sx,y + sy,e.getX(),e.getY(),l,r);
         x=e.getX();
         y=e.getY();
     }
@@ -45,12 +56,12 @@ public class Mouse extends MouseInputAdapter{
         if(e.getButton()==MouseEvent.BUTTON1)
         {
             l=true;
-            informClicked(x,y,true,true);
+            informClicked(x + sx,y + sy,true,true);
         }
         if(e.getButton()==MouseEvent.BUTTON3)
         {
             r=true;
-            informClicked(x,y,false,true);
+            informClicked(x + sx,y + sy,false,true);
         }
     }
     
@@ -58,12 +69,12 @@ public class Mouse extends MouseInputAdapter{
         if(e.getButton()==MouseEvent.BUTTON1)
         {
             l=false;
-            informClicked(x,y,true,false);
+            informClicked(x + sx,y + sy,true,false);
         }
         if(e.getButton()==MouseEvent.BUTTON3)
         {
             r=false;
-            informClicked(x,y,false,false);
+            informClicked(x + sx,y + sy,false,false);
         }
     }
     
@@ -85,9 +96,9 @@ public class Mouse extends MouseInputAdapter{
          }
     }
     
-    public int getX()    {return x;}
-    public int getY()    {return y;}
-    public Point get()   {return new Point(x,y);}
+    public int getX()    {return x + sx;}
+    public int getY()    {return y + sy;}
+    public Point get()   {return new Point(x + sx,y + sy);}
     public boolean getL(){return l;}
     public boolean getR(){return r;}
 }

@@ -54,7 +54,7 @@ public class UIRegion {
                 informClicked(m);
                 state = 1;
             }
-            return !blocksClick;
+            return blocksClick;
         }
         else
             state = 0;
@@ -63,8 +63,11 @@ public class UIRegion {
     
     public void draw(Graphics2D g)
     {
-        g.setColor(colors[state]);
-        g.fillRect(region.x, region.y, region.width, region.height);
+        if(visible)
+        {
+            g.setColor(colors[state]);
+            g.fillRect(region.x, region.y, region.width, region.height);
+        }
     }
     
     public void informClicked(Mouse m)
