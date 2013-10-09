@@ -12,35 +12,36 @@ import java.awt.Rectangle;
  *
  * @author George
  */
-public class Drone extends ObjectController{
+public class Drone extends ObjectController implements ClickListener{
     DrawComp drawer;
-    UIRegion ui;
+    Vector2 location;
+    Attackable att;
     final float speed = 2;
     Vector2 target;
     
-    public Drone(World w, boolean blueTeam, UIListener l)
+    private void init(World w, boolean blueTeam, UIListener l, Vector2 loc)
     {
         drawer = new DrawComp(new SpriteData(0,0,0,32,64), -15, -57);
-        Color[] colors = new Color[3];
-        colors[0] = new Color(0, 0, 0, 128);
-        colors[1] = new Color(100, 100, 100, 128);
-        colors[2] = new Color(100, 0, 0, 128);
-        Point p = DrawComp.fromIso(drawer.x, drawer.y, drawer.z);
-        ui = new UIRegion(new Rectangle(p.x - 16, p.y - 40, 19, 38), 1, colors, l);
-        ui.blocksClick = true;
-        w.add(ui);
+        att = new Attackable(-8, -33, 19, 38, 500, this);
+        w.add(att.ui);
         w.add(drawer);
         
-        drawer.x = 10;
-        drawer.y = blueTeam?0.5f:49.5f;
-        target = new Vector2(10,blueTeam?49.5f:0.5f);
+        location = loc.clone();
+        target =  new Vector2(10,25);//location.clone();
     }
+    
+    public Drone(World w, boolean blueTeam, UIListener l)
+    {init(w,blueTeam,l,new Vector2(10, blueTeam?0.5f:49.5f));}
+    
+    public Drone(World w, boolean blueTeam, UIListener l, Vector2 loc)
+    {init(w,blueTeam,l,loc);}
     
     public void update(float t, World w)
     {
+        drawer.move(location);
         if(target != null)
         {
-            Vector2 temp = Vector2.vecSubt(target, new Vector2(drawer.x,drawer.y));
+            Vector2 temp = Vector2.vecSubt(target, location);
             if(temp.length() < speed * t)
             {
                 target = null;
@@ -48,14 +49,30 @@ public class Drone extends ObjectController{
             else
             {
                 temp.setLength(speed * t);
-                drawer.x += temp.x;
-                drawer.y += temp.y;
+                location.add(temp);
             }
         }
-        Point UICorner = DrawComp.fromIso(drawer.x, drawer.y, drawer.z);
-        UICorner.x -= 8;
-        UICorner.y -= 33;
-        ui.region.setLocation(UICorner);
+        Point UICorner = drawer.fromIso();
+        att.move(UICorner,location);
         
+    }
+
+    @Override
+    public void updateAttackable(Mouse m) {
+        if(m.getL())
+        {
+            
+        }
+    }
+    
+    public boolean checkRemove()
+    {
+        return att.alive();
+    }
+    
+    public void remove(World w)
+    {
+        att.remove(w);
+        drawer.remove(w);
     }
 }

@@ -12,4 +12,11 @@ public class ObjectController {
     
     public void update(float t, World w)
     {}
+    
+    public void remove(World w)
+    {}
+
+    boolean checkRemove() {
+        return false;
+    }
 }

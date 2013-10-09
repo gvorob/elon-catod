@@ -30,6 +30,7 @@ public class World implements UIListener{
     public ArrayList<DrawComp> drawComps;
     public ArrayList<ObjectController> controllers;
     public ArrayList<UIRegion> ui;
+    public ArrayList<Attackable> attackables;
     
     public Player player;
     public DrawComp map;
@@ -76,6 +77,7 @@ public class World implements UIListener{
         drawComps = new ArrayList<>();
         ui = new ArrayList<>();
         controllers = new ArrayList<>();
+        attackables = new ArrayList<>();
         
         map = new DrawComp(new SpriteData(2, 0, 0, 560, 280), 0, -200);
         drawComps.add(map);
@@ -87,6 +89,7 @@ public class World implements UIListener{
         //drawComps.add(temp);
         
         //entities = new ArrayList<>();
+        Attackable.setPlayer(player);
         
     }
     
@@ -142,64 +145,17 @@ public class World implements UIListener{
                 }
                 
             }
-            //if(keys.getKey(KeyEvent.VK_F1))
-                //mode = MODE_EDITOR;
-        }
-        /*else if(mode == MODE_EDITOR)
-        {
-            if(keys.getKeyPressed(KeyEvent.VK_SPACE))
-            {}
-                //tiles[editx][edity][editz] = editTile.clone();
             
-            
-            if(keys.getKeyPressed(KeyEvent.VK_W))
-                edity += 1;
-            if(keys.getKeyPressed(KeyEvent.VK_S))
-                edity -= 1;
-            if(keys.getKeyPressed(KeyEvent.VK_A))
-                editx -= 1;
-            if(keys.getKeyPressed(KeyEvent.VK_D))
-                editx += 1;
-            if(keys.getKeyPressed(KeyEvent.VK_SHIFT))
-                editz += 1;
-            if(keys.getKeyPressed(KeyEvent.VK_CONTROL))
-                editz -= 1;
-            if(keys.getKeyPressed(KeyEvent.VK_MINUS))
-                editTile.sprite -= 1;
-            if(keys.getKeyPressed(KeyEvent.VK_EQUALS))
-                editTile.sprite += 1;
-            if(keys.getKeyPressed(KeyEvent.VK_OPEN_BRACKET))
-                editTile.type -= 1;
-            if(keys.getKeyPressed(KeyEvent.VK_CLOSE_BRACKET))
-                editTile.type += 1;
-            
-            //fix any out-of-bounds errors
-            if(editx < 0)
-                editx = 0;
-            if(editx >= xyz[0])
-                editx = xyz[0] - 1;
-            if(edity < 0)
-                edity = 0;
-            if(edity >= xyz[1])
-                edity = xyz[1] - 1;
-            if(editz < 0)
-                editz = 0;
-            if(editz >= xyz[2])
-                editz = xyz[2] - 1;
-            
-            
-            if(keys.getKey(KeyEvent.VK_ESCAPE))
-                mode = MODE_PLAY;
-        }*/
-        
-        /*else if(mode == MODE_ASSEMBLE)
-        {
-            Iterator<UIRegion> i = ui.iterator();
-            while(i.hasNext())
+            for(int i = controllers.size() - 1; i >= 0; i--)
             {
-                i.next().update(m);
+                if(controllers.get(i).checkRemove())
+                {
+                    System.out.println("I AM DEAD");
+                    controllers.get(i).remove(this);//run destructors
+                    controllers.remove(i);
+                }
             }
-        }*/
+        }
     }
     
     public void draw(BufferedImage b)
@@ -312,13 +268,22 @@ public class World implements UIListener{
     }
     
     public void add(DrawComp d)
-    {drawComps.add(d); 
-    }
+    {drawComps.add(d);}
     public void add(UIRegion r)
     {ui.add(r);Collections.sort(ui, new Comparator<UIRegion>(){
         public int compare(UIRegion a, UIRegion b)
         {return b.uiid- a.uiid;}
     });}
+    public void add(Attackable a)
+    {attackables.add(a);}
+    public void add(ObjectController o)
+    {controllers.add(o);}
+    public void remove(DrawComp d)
+    {while(drawComps.remove(d));}
+    public void remove(UIRegion r)
+    {while(ui.remove(r));}
+    public void remove(Attackable a)
+    {while(attackables.remove(a));}
     
     private void drawEntities(int camDistance, Graphics2D g)//camdistance is the distance from the top-left of the grid, given by x - y
     {

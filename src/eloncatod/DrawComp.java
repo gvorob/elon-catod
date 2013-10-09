@@ -44,6 +44,9 @@ public class DrawComp extends Component{
     {return iso;}
     
     
+    public Point fromIso()
+    {return fromIso(x, y , z);}
+    
     public static Point fromIso(float x, float y, float z)
     {
         int xcor = (int)(8 * x + 8 * y);
@@ -54,5 +57,15 @@ public class DrawComp extends Component{
     public static Vector2 toIso(int x, int y)
     {
         return new Vector2(x/16.0f + y/8.0f, x/16.0f - y/8.0f);
+    }
+
+    void move(Vector2 location) {
+        x = location.x;
+        y = location.y;
+    }
+    
+    public void remove(World w)
+    {
+        w.remove(this);
     }
 }

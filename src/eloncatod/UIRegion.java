@@ -75,4 +75,9 @@ public class UIRegion {
         if(parent != null)
             parent.informClicked(uiid, m);
     }
+    
+    public void remove(World w)
+    {
+        w.remove(this);
+    }
 }

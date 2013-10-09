@@ -63,4 +63,16 @@ public class Player extends ObjectController implements UIListener{
                 break;
         }
     }
+
+    public void clickedOn(Attackable att, Mouse m) {
+        if(!m.getL())
+        {
+            createProjectile(att);
+        }
+    }
+    
+    private void createProjectile(Attackable att)
+    {
+        att.takeDamage(0, 200);
+    }
 }

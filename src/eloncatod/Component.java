@@ -23,14 +23,4 @@ public class Component {
         if(parent == null)
             parent = p;
     }
-    
-    public void update(World w)
-    {
-        
-    }
-    
-    public void draw(BufferedImage b)
-    {
-        
-    }
 }
