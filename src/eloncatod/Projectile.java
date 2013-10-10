@@ -11,6 +11,7 @@ package eloncatod;
 public class Projectile extends ObjectController{
     Attackable target;
     Vector2 location;
+    Vector2 origin;
     float speed;
     int damage;
     int damageType;
@@ -26,9 +27,11 @@ public class Projectile extends ObjectController{
         damage = dam;
         damageType = damt;
         location = loc;
-        speed = s;
+        origin = loc.clone();
+        speed = 10;//s;
         
         drawer.move(loc);
+        doBounce();
         World.w.add(drawer);
     }
     
@@ -38,11 +41,22 @@ public class Projectile extends ObjectController{
         target.getLoc();
         drawer.move(location);
         
+        doBounce();
+        
         if(target.getLoc().equals(location))
         {
             target.takeDamage(damageType, damage);
             hit = true;
         }
+    }
+    
+    private void doBounce()
+    {
+        float width = Vector2.dist(origin, target.getLoc());
+        float x = location.distTo(origin);
+        float height =   x * (x - width) / (width * width) * 4;//parabola of height 1 with roots at 0 and width
+        drawer.z = 4 - 2 * height;//varies from height 3 to 5
+        //System.out.printf("percent:%f  height:%f\n", x/width, height);
     }
     
     public boolean checkRemove()
