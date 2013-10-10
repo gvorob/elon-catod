@@ -76,8 +76,8 @@ public class UIRegion {
             parent.informClicked(uiid, m);
     }
     
-    public void remove(World w)
+    public void remove()
     {
-        w.remove(this);
+        World.w.remove(this);
     }
 }

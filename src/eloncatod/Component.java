@@ -23,4 +23,6 @@ public class Component {
         if(parent == null)
             parent = p;
     }
+    
+    //public void remove(){World.w.remove(this);};
 }

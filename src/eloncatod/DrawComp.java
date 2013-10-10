@@ -64,8 +64,8 @@ public class DrawComp extends Component{
         y = location.y;
     }
     
-    public void remove(World w)
+    public void remove()
     {
-        w.remove(this);
+        World.w.remove(this);
     }
 }

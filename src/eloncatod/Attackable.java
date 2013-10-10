@@ -17,7 +17,7 @@ public class Attackable extends Component implements UIListener{
     public UIRegion ui;
     int xOffset;
     int yOffset;
-    public ClickListener parent;
+    //public ClickListener parent;
     public Vector2 loc;
     public float size;
     
@@ -25,7 +25,7 @@ public class Attackable extends Component implements UIListener{
     public float maxHealth;
     
     
-    public Attackable(int x,int y, int w, int h, float maxH, ClickListener p)
+    public Attackable(int x,int y, int w, int h, float maxH)
     {
         xOffset = x;
         yOffset = y;
@@ -36,7 +36,7 @@ public class Attackable extends Component implements UIListener{
         colors[2] = new Color(100, 0, 0, 128);
         ui = new UIRegion(new Rectangle(w, h), 10, colors, this);
         maxHealth = health = maxH;
-        parent = p;
+        //parent = p;
     }
     
     public void move(Point screenP,Vector2 worldP)
@@ -68,6 +68,11 @@ public class Attackable extends Component implements UIListener{
         player.clickedOn(this, m);
     }
     
+    public Vector2 getLoc()
+    {
+        return loc.clone();
+    }
+    
     public static void setPlayer(Player p)
     {player =  p;}
 
@@ -76,9 +81,9 @@ public class Attackable extends Component implements UIListener{
         return health <= 0;
     }
     
-    public void remove(World w)
+    public void remove()
     {
-        ui.remove(w);
-        w.remove(this);
+        ui.remove();
+        World.w.remove(this);
     }
 }

@@ -16,39 +16,32 @@ public class Player extends ObjectController implements UIListener{
     DrawComp drawer;
     UIRegion interactRegion;
     Vector2 target;
+    Vector2 location;
     
     final float speed = 6;
     
-    public Player(World w)
+    public Player()
     {
         SpriteData temp = new SpriteData(1, 0, 0, 64, 128);
         drawer = new DrawComp(temp,-32,-116);
         interactRegion = new UIRegion(new Rectangle(-50000, -50000, 100000, 100000), 0, this);
-        w.add(drawer);
-        w.add(interactRegion);
+        location = new Vector2(0,0);
+        World.w.add(drawer);
+        World.w.add(interactRegion);
     }
     
-    public void update(float t, World w)
+    public void update(float t)
     {
         if(target != null)
         {
-            Vector2 temp = Vector2.vecSubt(target, new Vector2(drawer.x,drawer.y));
-            if(temp.length() < speed * t)
-            {
-                target = null;
-            }
-            else
-            {
-                temp.setLength(speed * t);
-                drawer.x += temp.x;
-                drawer.y += temp.y;
-            }
+            Collider.moveTowards(location, target, t * speed);
         }
+        drawer.move(location);
     }
     
     public Point getView()
     {
-        Point view =  DrawComp.fromIso(drawer.x, drawer.y, drawer.z);
+        Point view =  drawer.fromIso();
         view.y -= 250;
         view.x -= 250;
         return view;

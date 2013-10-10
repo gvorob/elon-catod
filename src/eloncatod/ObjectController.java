@@ -10,10 +10,10 @@ package eloncatod;
  */
 public class ObjectController {
     
-    public void update(float t, World w)
+    public void update(float t)
     {}
     
-    public void remove(World w)
+    public void remove()
     {}
 
     boolean checkRemove() {
