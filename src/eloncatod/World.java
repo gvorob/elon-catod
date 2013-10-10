@@ -64,10 +64,11 @@ public class World implements UIListener{
         //createUI(MODE_ASSEMBLE);
         //editTile = new Tile(0,0);
         try {
-            sprites = new BufferedImage[3];
+            sprites = new BufferedImage[4];
             sprites[0] = ImageIO.read(new File("drones.png"));
             sprites[1] = ImageIO.read(new File("entities.png"));
             sprites[2] = ImageIO.read(new File("map.png"));
+            sprites[3] = ImageIO.read(new File("projectiles.png"));
             //assembleBG = ImageIO.read(new File("assemble.png"));
         } catch (IOException ex) {
             Logger.getLogger(World.class.getName()).log(Level.SEVERE, null, ex);

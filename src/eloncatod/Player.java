@@ -66,6 +66,7 @@ public class Player extends ObjectController implements UIListener{
     
     private void createProjectile(Attackable att)
     {
-        att.takeDamage(0, 200);
+        Projectile p = new Projectile(att, 100, 0, 50, location.clone());
+        World.w.add(p);
     }
 }

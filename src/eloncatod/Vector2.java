@@ -156,4 +156,14 @@ public class Vector2 {
     {
         return Math.abs(x + y);
     }
+    
+    public float distTo(Vector2 a)
+    {
+        return dist(a, this);
+    }
+    
+    public static float dist(Vector2 a, Vector2 b)
+    {
+        return Vector2.vecSubt(a, b).length();
+    }
 }
